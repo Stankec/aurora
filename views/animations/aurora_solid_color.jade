@@ -1,0 +1,52 @@
+.col-xs-12.handle
+  h2 Solid color
+.col-xs-12
+  .form-group
+    input.color.form-control(type="text", name="color", value="#123456")
+    center
+      .picker
+
+script.
+  console.log('Loaded aurora_solid_color');
+  var aurora_solid_color = {
+    colorInput: $('.animation.aurora_solid_color input.color'),
+    colorPicker: $.farbtastic('.animation.aurora_solid_color .picker'),
+    currentOptions: {
+      color: ""
+    },
+    onColorChange: function(color, notify) {
+      console.log('Color: '+color);
+      // Update the input
+      aurora_solid_color.colorInput.val(color);
+      aurora_solid_color.colorInput.css({
+        'background-color': color,
+        'color': aurora_solid_color.getContrast50(color)
+      });
+      if (notify) socket.emit('animation_update', {
+        id: 'aurora_solid_color',
+        options: {
+          color: color
+        }
+      });
+    },
+    getContrast50: function(hexcolor){
+      hexcolor = hexcolor.replace('#','')
+      return (parseInt(hexcolor, 16) > (0xffffff/2)) ? '#000000':'#ffffff';
+    },
+    options: function(newOptions){
+      if (typeof newOptions !== 'undefined') {
+        for (var key in newOptions) {
+          if (aurora_solid_color.currentOptions.hasOwnProperty(key)) {
+            if (key === "color") {
+              aurora_solid_color.currentOptions[key] = newOptions[key]["hex"];
+              aurora_solid_color.colorPicker.setColor(aurora_solid_color.currentOptions[key], false);
+            } else {
+              aurora_solid_color.currentOptions[key] = newOptions[key];
+            }
+          }
+        }
+      }
+      return aurora_solid_color.currentOptions;
+    }
+  }
+  aurora_solid_color.colorPicker.linkTo(aurora_solid_color.onColorChange);

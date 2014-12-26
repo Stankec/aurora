@@ -1,0 +1,19 @@
+html
+  head
+    title!= title
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(href='/stylesheets/jquery-ui.min.css', rel='stylesheet')
+    link(href='/stylesheets/jquery-ui.structure.min.css', rel='stylesheet')
+    link(href='/stylesheets/bootstrap.min.css', rel='stylesheet')
+    link(href='/stylesheets/farbtastic.css', rel='stylesheet')
+    link(href='/stylesheets/bootstrap-theme.css', rel='stylesheet')
+    link(href='/stylesheets/style.css', rel='stylesheet')
+    script(src='/javascripts/jquery-2.1.1.min.js')
+    script(src='/javascripts/jquery-ui.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='/socket.io/socket.io.js')
+    script(src='/javascripts/farbtastic.js')
+    script(src='/javascripts/core.js')
+  body
+    .content
+        .container!= body

@@ -1,0 +1,8 @@
+.spacer {
+  height: 3rem; }
+
+div[class^=col].animation {
+  cursor: move; }
+
+.handle {
+  cursor: move; }

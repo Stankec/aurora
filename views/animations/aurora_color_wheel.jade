@@ -1,0 +1,70 @@
+.col-xs-12.handle
+  h2.handle Color Wheel
+.col-xs-12
+  .form-group
+    .col-xs-12
+      label Speed
+      input.speed(type='range' min=2 value=2 max=360 step=2)
+  .form-group
+    .col-xs-12
+      label Lightness
+      input.lightness(type='range' min=10 value=50 max=90 step=1)
+      .spacer
+            
+  script.
+    var aurora_color_wheel = {
+      currentOptions: {
+        speed: 2,
+        lightness: 50
+      },
+      options: function(newOptions) {
+        if (typeof newOptions !== 'undefined') {
+          for (var key in newOptions) {
+            if (aurora_color_wheel.currentOptions.hasOwnProperty(key)) {
+              if (key === "speed") {
+                aurora_color_wheel.set_speed(newOptions.speed, false);
+              } else {
+                aurora_color_wheel.currentOptions[key] = newOptions[key];
+              }
+            }
+          }
+        }
+        return aurora_color_wheel.currentOptions;
+      },
+      set_speed: function(speed, notify) {
+        notify = typeof notify !== 'undefined' ? notify : true;
+        aurora_color_wheel.currentOptions.speed = speed;
+        //- aurora_color_wheel.label.text(''+ (speed * 100 * 2 / 360) +'%');
+        aurora_color_wheel.slider.val(speed);
+        if (notify) {
+          socket.emit('animation_update', {
+            id: 'aurora_color_wheel',
+            options: {
+              speed: speed
+            }
+          });
+        }
+      },
+      set_lightness: function(lightness, notify) {
+        notify = typeof notify !== 'undefined' ? notify : true;
+        aurora_color_wheel.currentOptions.lightness = lightness;
+        aurora_color_wheel.lightnessSlider.val(lightness);
+        if (notify) {
+          socket.emit('animation_update', {
+            id: 'aurora_color_wheel',
+            options: {
+              lightness: lightness
+            }
+          });
+        }
+      },
+      slider: $('.animation.aurora_color_wheel input.speed'),
+      lightnessSlider: $('.animation.aurora_color_wheel input.lightness'),
+      label: $('.animation.aurora_color_wheel .label')
+    }
+    aurora_color_wheel.slider.on('change', function(event){
+      aurora_color_wheel.set_speed(parseInt($(this).val()));
+    });
+    aurora_color_wheel.lightnessSlider.on('change', function(event){
+      aurora_color_wheel.set_lightness(parseInt($(this).val()));
+    });
