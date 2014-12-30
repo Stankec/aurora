@@ -51,6 +51,7 @@ module.exports = {
   // These three are necessary
   id: "aurora_color_wheel",
   name: "Color Wheel",
+  adapter: ["adafruit_led_pixels"],
   options: options,
   tick: tick
 }

@@ -43,6 +43,7 @@ module.exports = {
   // These three are necessary
   id: "aurora_solid_color",
   name: "Solid Color",
+  adapter: ["adafruit_led_pixels"],
   options: options,
   tick: tick,
   // The following are optional
