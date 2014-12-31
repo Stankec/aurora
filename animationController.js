@@ -8,18 +8,13 @@ var fps = 30;
 var availableAnimations = [];
 var activeAnimations = [];
 var currentState = [];
-var deviceConfiguration = {
-  // Configuration for Adafruit LED pixels
-  numberOfLeds: 25
-}
+
 var loop = animitter({ fps: 30 }, function(frameCount, deltaTime){
   if (activeAnimations.length != 0) {
     for (var i = activeAnimations.length - 1; i >= 0; i--) {
       activeAnimations[i].tick(currentState)
     };
     updateDevice(currentState)
-  } else {
-    loop.stop();
   }
 });
 
@@ -57,16 +52,15 @@ function stopAnimations() {
 }
 
 // Device interaction
-function configure(configuration) {
-  deviceConfiguration.numberOfLeds = configuration.numberOfLeds;
-  updateConfiguration();
-}
-
-function updateConfiguration() {
-  currentState = [];
-  for (var i = deviceConfiguration.numberOfLeds - 1; i >= 0; i--) {
-    currentState.push(null);
-  };
+function updateConfiguration(defaultArray) {
+  if (typeof defaultArray === 'undefined') {
+    if (adapterController !=== null) {
+      defaultArray = adapterController.currentAdatper().defaultArray
+    } else {
+      defaultArray = [];
+    }
+  }
+  currentState = JSON.parse(JSON.stringify(defaultArray));
 }
 
 function updateDevice(configuration) {
@@ -124,8 +118,6 @@ module.exports = {
   loadAnimations: loadAnimations,
   start: startAnimations,
   stop: stopAnimations,
-  configure: configure,
-  configuration: deviceConfiguration,
   updateConfiguration: updateConfiguration,
   setAdapterController: setAdapterController,
   setDefaultAnimation: setDefaultAnimation,
