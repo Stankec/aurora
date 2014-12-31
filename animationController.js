@@ -54,7 +54,7 @@ function stopAnimations() {
 // Device interaction
 function updateConfiguration(defaultArray) {
   if (typeof defaultArray === 'undefined') {
-    if (adapterController !=== null) {
+    if (adapterController !== null) {
       defaultArray = adapterController.currentAdatper().defaultArray
     } else {
       defaultArray = [];
