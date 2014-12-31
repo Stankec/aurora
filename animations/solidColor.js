@@ -8,7 +8,8 @@ var currentOptions = {
 // Functions
 function tick(currentState) {
   for (var i = currentState.length - 1; i >= 0; i--) {
-    currentState[i] = currentOptions.color;
+    if (currentState[i].toString() !== currentOptions.color.toString())
+      currentState[i] = tinycolor(currentOptions.color.toString());
   };
 }
 
