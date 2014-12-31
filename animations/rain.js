@@ -3,11 +3,11 @@ var tinycolor = require('tinycolor2');
 // Variables
 var currentOptions = {
   occurance: 0.33,
-  lifeSpan: 2, // seconds
-  max: 5,
-  fps: 24,
+  lifeSpan: 4, // seconds
+  max: 3,
+  fps: 30,
   preset: -1,
-  spread: 3
+  spread: 4
 }
 var raindrops = [];
 
@@ -16,7 +16,7 @@ function tick(currentState) {
   // Kill raindrops if they are too old
   for (var i = raindrops.length - 1; i >= 0; i--) {
     var raindrop = raindrops[i];
-    if ((raindrop.age > raindrop.lifeSpan) || (raindrop.spread >= raindrop.maxSpread)) {
+    if ((raindrop.age > raindrop.lifeSpan) || (raindrop.spread > raindrop.maxSpread)) {
       raindrops.splice(i, 1);
     }
   }
@@ -35,23 +35,21 @@ function tick(currentState) {
   // Fill mask
   for (var i = raindrops.length - 1; i >= 0; i--) {
     var raindrop = raindrops[i];
-    if (raindrop.age % Math.ceil(raindrop.maxSpread / raindrop.lifeSpan) === 0) {
-      raindrop.spread++;
+    if (raindrop.age % Math.ceil(raindrop.lifeSpan / raindrop.maxSpread) === 0) {
+      raindrop.spread += 1;
     }
     var maxLight = (raindrop.lifeSpan - raindrop.age) / raindrop.lifeSpan;
     var increment = maxLight / raindrop.spread;
     var light = maxLight;
     var startPos = raindrop.position - raindrop.spread;
     var endPos = raindrop.position + raindrop.spread;
-    if (startPos < 0) startPos = 0;
-    if (endPos >= raindrops.length) endPos = raindrops.length - 1;
-    for (var p = startPos; p <= endPos, p++) {
+    for (var p = startPos; p <= endPos; p++) {
       if (p <= raindrop.position) {
-        mask[p] = light;
+        if (p >= 0 && p < mask.length && light > mask[p]) mask[p] = light;
         light -= increment;
       } else {
         light += increment;
-        mask[p] = light;
+        if (p >= 0 && p < mask.length && light > mask[p]) mask[p] = light;
       }
     }
   }
@@ -61,7 +59,7 @@ function tick(currentState) {
   }
   // Write
   for (var i = currentState.length - 1; i >= 0; i--) {
-    currentState[i] = tinycolor(currentState[i].toString()).darken(mask[i]);
+    currentState[i] = currentState[i].darken(mask[i]);
   };
 }
 
@@ -89,13 +87,14 @@ function options(newOptions) {
 
 // Support functions
 function newRaindrop() {
-  return {
+  var raindrop = {
     age: 0,
     lifeSpan: currentOptions.lifeSpan * currentOptions.fps,
     position: Math.floor(Math.random() * 25),
-    maxSpread: Math.floor(currentOptions.spread * (Math.random() - 0.5) ),
+    maxSpread: Math.floor(currentOptions.spread), //- currentOptions.spread * (Math.random() - 0.5) ),
     spread: 0
-  }
+  };
+  return raindrop;
 }
 
 function setPreset(presetId) {
